@@ -17,8 +17,6 @@ Ci-dessous, le tableau demandé à l'étape des regles de filtrages que nous all
 | IP Source        | IP Destination   | Type               | Port source | Port destination | Action |
 | ---------------- | ---------------- | ------------------ | ----------- | ---------------- | ------ |
 | *                | *                | *                  | *           | *                | DROP   |
-| 192.168.100.0/24 | eth0             | UDP Request        | 53          | 53               | Accept |
-| eth0             | 192.168.100.0/24 | UDP Response       | 53          | 53               | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 53          | 53               | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 53          | 53               | Accept |
 | 192.168.100.0/24 | eth0             | UDP                | 53          | 53               | Accept |
