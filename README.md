@@ -121,17 +121,25 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 ---
 
-**LIVRABLE : Remplir le tableau**
-
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+| IP Source        | IP Destination   | Type               | Port source | Port destination | Action |
+| ---------------- | ---------------- | ------------------ | ----------- | ---------------- | ------ |
+| *                | *                | *                  | *           | *                | DROP   |
+| 192.168.100.0/24 | eth0             | UDP Request        | 53          | 53               | Accept |
+| eth0             | 192.168.100.0/24 | UDP Response       | 53          | 53               | Accept |
+| 192.168.100.0/24 | eth0             | TCP Request        | 53          | 53               | Accept |
+| eth0             | 192.168.100.0/24 | TCP Response       | 53          | 53               | Accept |
+| 192.168.100.0/24 | eth0             | ICMP Echo Request  | 1           | 1                | Accept |
+| eth0             | 192.168.100.0/24 | ICMP Echo Response | 1           | 1                | Accept |
+| 192.168.100.0/24 | 192.168.200.0/24 | ICMP Echo Request  | 1           | 1                | Accept |
+| 192.168.200.0/24 | 192.168.100.0/24 | ICMP Echo Response | 1           | 1                | Accept |
+| 192.168.100.0/24 | eth0             | TCP                | 80          | 80               | Accept |
+| eth0             | 192.168.100.0/24 | TCP                | 80          | 80               | Accept |
+| 192.168.100.0/24 | eth0             | TCP                | 8080        | 8080             | Accept |
+| eth0             | 192.168.100.0/24 | TCP                | 8080        | 8080             | Accept |
+| 192.168.100.0/24 | eth0             | TCP                | 443         | 443              | Accept |
+| eth0             | 192.168.100.0/24 | TCP                | 443         | 443              | Accept |
+| 192.168.100.3    | 192.168.200.3    | TCP                | *           | 22               | Accept |
+| 192.168.200.3    | 192.168.100.3    | TCP                | 22          | *                | Accept |
 
 ---
 
@@ -226,7 +234,7 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
+![ping_not_possible](rendu/ping_not_possible.png)
 
 ---
 
@@ -258,7 +266,7 @@ ping 192.168.100.3
 
 ---
 
-**LIVRABLE : capture d'écran de votre nouvelle tentative de ping.**
+![ping_possible](./rendu/ping_possible.png)
 
 ---
 
@@ -272,7 +280,7 @@ ping 8.8.8.8
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping vers l'Internet.**
+![ping_8888_not_possible](./rendu/ping_8888_not_possible.png)
 
 ---
 
@@ -365,12 +373,28 @@ Ceci correspond a la **condition 2** du cahier des charges.
 
 Commandes iptables :
 
----
+**LAN TO DMZ :**
 
-```bash
-LIVRABLE : Commandes iptables
 ```
----
+iptables -A FORWARD -s 192.168.100.0/24 -d 192.168.200.0/24 -p icmp --icmp-type 8 -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -d 192.168.200.0/24 -p icmp --icmp-type 0 -j ACCEPT
+```
+
+**DMZ TO LAN :**
+
+```
+iptables -A FORWARD -s 192.168.200.0/24 -d 192.168.100.0/24 -p icmp --icmp-type 8 -j ACCEPT
+iptables -A FORWARD -s 192.168.200.0/24 -d 192.168.100.0/24 -p icmp --icmp-type 0 -j ACCEPT
+```
+
+**LAN TO WAN :**
+
+```
+iptables -A FORWARD -s 192.168.100.0/24 -p icmp --icmp-type 8 -o eth0 -j ACCEPT
+iptables -A FORWARD -d 192.168.100.0/24 -p icmp --icmp-type 0 -i eth0 -j ACCEPT
+```
+
+
 
 ### Questions
 
@@ -381,11 +405,11 @@ LIVRABLE : Commandes iptables
 
 ```bash
 ping 8.8.8.8
-``` 	            
+```
 Faire une capture du ping.
 
 ---
-**LIVRABLE : capture d'écran de votre ping vers l'Internet.**
+![ping_8888_possible](./rendu/ping_8888_possible.png)
 
 ---
 
@@ -393,23 +417,19 @@ Faire une capture du ping.
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant : 
   </li>                                  
 </ol>
+| De Client_in_LAN à  | OK/KO | Commentaires et explications                                 |
+| :------------------ | :---: | :----------------------------------------------------------- |
+| Interface DMZ du FW |  KO   | Tous les input du firewall sont drops.                       |
+| Interface LAN du FW |  KO   | Tous les input du firewall sont drops.                       |
+| Client LAN          |  OK   | Le client étant la source et la destination, le ping est permis. |
+| Serveur WAN         |  OK   | Les régles que l'on a instaurées nous le permettent.         |
 
-
-| De Client\_in\_LAN à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
-
-
-| De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
-
+| De Server_in_DMZ à  | OK/KO | Commentaires et explications                                 |
+| :------------------ | :---: | :----------------------------------------------------------- |
+| Interface DMZ du FW |  KO   | Tous les input du firewall sont drops.                       |
+| Interface LAN du FW |  KO   | Tous les input du firewall sont drops.                       |
+| Serveur DMZ         |  OK   | Le client étant la source et la destination, le ping est permis. |
+| Serveur WAN         |  KO   | Aucune régle du FW n'autorise ce traffic.                    |
 
 ## Règles pour le protocole DNS
 
@@ -426,7 +446,7 @@ ping www.google.com
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![ping_google_ch_not_possible](./rendu/ping_google_ch_not_possible.png)
 
 ---
 
@@ -437,7 +457,10 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -d 192.168.100.0/24 -i eth0 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -o eth0 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.100.0/24 -i eth0 -p tcp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -o eth0 -p tcp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
 ```
 
 ---
@@ -446,22 +469,21 @@ LIVRABLE : Commandes iptables
   <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) : 
   </li>                                  
 </ol>
-
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![ping_google_ch_possible](./rendu/ping_google_ch_possible.png)
 
 ---
 
 <ol type="a" start="6">
   <li>Remarques (sur le message du premier ping)? 
-  </li>                                  
+  </li> 
 </ol>
 
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Nous pouvons remarquer que le ping n'est même pas entamé car en effet, la machine Client_in_LAN ne sait pas à quelle adresse IP envoyé les pings.
 
 ---
 
@@ -481,7 +503,12 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -s 192.168.100.0/24 -o eth0 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.100.0/24 -i eth0 -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.100.0/24 -o eth0 -p tcp --sport 8080 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -i eth0 -p tcp --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -o eth0 -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.100.0/24 -i eth0 -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT
 ```
 
 ---
@@ -493,7 +520,10 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -s 192.168.100.0/24 -d 192.168.200.3 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.200.3 -d 192.168.100.0/24 -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -d 192.168.200.3 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.200.3 -o eth0 -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
 ```
 ---
 
@@ -501,10 +531,13 @@ LIVRABLE : Commandes iptables
   <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran). 
   </li>                                  
 </ol>
-
 ---
 
-**LIVRABLE : capture d'écran.**
+![wget_http_lan_to_dmz](./rendu/wget_http_lan_to_dmz.png)
+
+![wget_https_wan](./rendu/wget_https_wan.png)
+
+![wget_http_wan](./rendu/wget_http_wan.png)
 
 ---
 
@@ -521,7 +554,11 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -s 192.168.100.3 -d 192.168.200.3 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.200.3 -d 192.168.100.3 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -s 192.168.100.3 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -d 192.168.100.3 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 ```
 
 ---
@@ -534,7 +571,7 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 
 ---
 
-**LIVRABLE : capture d'écran de votre connexion ssh.**
+![ssh_lan_client_to_dmz](./rendu/ssh_lan_client_to_dmz.png)
 
 ---
 
@@ -542,11 +579,10 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
   <li>Expliquer l'utilité de **ssh** sur un serveur. 
   </li>                                  
 </ol>
-
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+ssh permet d'ouvrir une connexion sécurisée à distance sur un serveur ou tout autre matériel. Cette dernière nous permettra d'ouvrir un terminal sur l'appareil cible afin de l'administrer.
 
 ---
 
@@ -559,7 +595,7 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Il faut faire très attention à n'autoriser que les machines et appareils autorisés à se connecter sur le terminal distant lorsque l'on configure un pare-feu sur ces règles de connexion.
 
 ---
 
@@ -571,9 +607,8 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
   <li>Insérer la capture d’écran avec toutes vos règles iptables
   </li>                                  
 </ol>
-
 ---
 
-**LIVRABLE : capture d'écran avec toutes vos règles.**
+![all_iptables_rules](./rendu/all_iptables_rules.png)
 
 ---

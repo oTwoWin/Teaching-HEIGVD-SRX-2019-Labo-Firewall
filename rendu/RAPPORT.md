@@ -40,15 +40,15 @@ Ci-dessous, le tableau demandé à l'étape des regles de filtrages que nous all
 
 Dans ce chapitre, il nous était demandé d'effectuer un ping entre le Client_in_LAN et le Server_in_DMZ. A ce stade, aucune configuration n'a été effectuée. Comme vous pouvez le remarqué sur la capture d'écran ci-dessous, il nous était impossible de pinger le serveur : 
 
-![ping_not_possible](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/ping_not_possible.png)
+![ping_not_possible](ping_not_possible.png)
 
 Après avoir effectué différentes configurations, nous pouvons remarquer que le ping entre le serveur de la DMZ et le client LAN est possible: 
 
-![ping_possible](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/ping_possible.png)
+![ping_possible](ping_possible.png)
 
 La dernière étape de cette section est de tester de pinger l'adresse *8.8.8.8* depuis le client ou le serveur. Nous pouvons remarquer ainsi que cela ne fonctionne pas : 
 
-![ping_8888_not_possible](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/ping_8888_not_possible.png)
+![ping_8888_not_possible](ping_8888_not_possible.png)
 
 ##### 4. Tests des connections et exemple de l'application d'une règle
 
@@ -85,7 +85,7 @@ iptables -A FORWARD -d 192.168.100.0/24 -p icmp --icmp-type 0 -i eth0 -j ACCEPT
 
 Nous pouvons remarquer que si nous essayons de pinger l'adresse 8.8.8.8, cela va réussir, contrairement à avant : 
 
-![ping_8888_possible](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/ping_8888_possible.png)
+![ping_8888_possible](ping_8888_possible.png)
 
 
 Ci-dessous, un tableau résumant toutes les règles mises en place :
@@ -110,7 +110,7 @@ Ci-dessous, un tableau résumant toutes les règles mises en place :
 
  Dans ce chapitre il nous est demandé de configurer le firewall afin qu'il autorise les requêtes DNS. Comme nous pouvons le voir ci-dessous, il nous est impossible de pinger le nom de domaine *google.ch*: 
 
-![ping_google_ch_not_possible](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/ping_google_ch_not_possible.png)
+![ping_google_ch_not_possible](ping_google_ch_not_possible.png)
 
 Nous pouvons également remarquer que le ping n'est même pas entamé car en effet, la machine Client_in_LAN ne sait pas à quelle adresse IP envoyé les pings.
 
@@ -125,7 +125,7 @@ iptables -A FORWARD -s 192.168.100.0/24 -o eth0 -p tcp --dport 53 -m state --sta
 
 Après avoir effectués, il nous était possible de pinger le nom de domaine de google : 
 
-![ping_google_ch_possible](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/ping_google_ch_possible.png)
+![ping_google_ch_possible](ping_google_ch_possible.png)
 
 ##### 6. Règles pour les protocoles HTTP et HTTPS
 
@@ -159,11 +159,11 @@ iptables -A FORWARD -s 192.168.200.3 -o eth0 -p tcp --sport 80 -m state --state 
 
 Nous pouvons remarquer que désormais, la commande *wget* fonctionne : 
 
-![wget_http_lan_to_dmz](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/wget_http_lan_to_dmz.png)
+![wget_http_lan_to_dmz](wget_http_lan_to_dmz.png)
 
-![wget_https_wan](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/wget_https_wan.png)
+![wget_https_wan](wget_https_wan.png)
 
-![wget_http_wan](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/wget_http_wan.png)
+![wget_http_wan](wget_http_wan.png)
 
 
 
@@ -192,7 +192,7 @@ iptables -A OUTPUT -d 192.168.100.3 -p tcp --sport 22 -m state --state ESTABLISH
 
 Ci-dessous, une capture d'écran présentant la bonne connexion ssh entre le client LAN et le serveur présent en DMZ : 
 
-![ssh_lan_client_to_dmz](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/ssh_lan_client_to_dmz.png)
+![ssh_lan_client_to_dmz](ssh_lan_client_to_dmz.png)
 
 
 
@@ -202,4 +202,4 @@ Il faut faire très attention à n'autoriser que les machines et appareils autor
 
 Ci-dessous, une capture d'écran présentant toutes les régles implémentées durant ce laboratoire. Comme nous pouvons le remarquer, tout traffic est interdit sauf les régles spécifiées : 
 
-![all_iptables_rules](/home/rayranu/CloudStation/Etudes/HEIG-VD/2018/Semestre 2/SRX/labos/labo1/rendu/all_iptables_rules.png)
+![all_iptables_rules](all_iptables_rules.png)
