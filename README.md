@@ -126,20 +126,30 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | *                | *                | *                  | *           | *                | DROP   |
 | 192.168.100.0/24 | eth0             | UDP Request        | 53          | 53               | Accept |
 | eth0             | 192.168.100.0/24 | UDP Response       | 53          | 53               | Accept |
-| 192.168.100.0/24 | eth0             | TCP Request        | 53          | 53               | Accept |
-| eth0             | 192.168.100.0/24 | TCP Response       | 53          | 53               | Accept |
+| 192.168.100.0/24 | eth0             | TCP                | 53          | 53               | Accept |
+| eth0             | 192.168.100.0/24 | TCP                | 53          | 53               | Accept |
+| 192.168.100.0/24 | eth0             | UDP                | 53          | 53               | Accept |
+| eth0             | 192.168.100.0/24 | UDP                | 53          | 53               | Accept |
 | 192.168.100.0/24 | eth0             | ICMP Echo Request  | 1           | 1                | Accept |
 | eth0             | 192.168.100.0/24 | ICMP Echo Response | 1           | 1                | Accept |
 | 192.168.100.0/24 | 192.168.200.0/24 | ICMP Echo Request  | 1           | 1                | Accept |
 | 192.168.200.0/24 | 192.168.100.0/24 | ICMP Echo Response | 1           | 1                | Accept |
+| 192.168.200.0/24 | 192.168.100.0/24 | ICMP Echo Request  | 1           | 1                | Accept |
+| 192.168.100.0/24 | 192.168.200.0/24 | ICMP Echo Response | 1           | 1                | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 80          | 80               | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 80          | 80               | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 8080        | 8080             | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 8080        | 8080             | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 443         | 443              | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 443         | 443              | Accept |
+| eth0             | 192.168.200.3    | TCP                | 80          | 80               | Accept |
+| 192.168.200.3    | eth0             | TCP                | 80          | 80               | Accept |
+| 192.168.100.0/24 | 192.168.200.3    | TCP                | 80          | 80               | Accept |
+| 192.168.200.3    | 192.168.100.0/24 | TCP                | 80          | 80               | Accept |
 | 192.168.100.3    | 192.168.200.3    | TCP                | *           | 22               | Accept |
 | 192.168.200.3    | 192.168.100.3    | TCP                | 22          | *                | Accept |
+| 192.168.100.3    | 192.168.100.2    | TCP                | *           | 22               | Accept |
+| 192.168.100.2    | 192.168.100.3    | TCP                | 22          | *                | Accept |
 
 ---
 
