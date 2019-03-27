@@ -19,20 +19,30 @@ Ci-dessous, le tableau demandé à l'étape des regles de filtrages que nous all
 | *                | *                | *                  | *           | *                | DROP   |
 | 192.168.100.0/24 | eth0             | UDP Request        | 53          | 53               | Accept |
 | eth0             | 192.168.100.0/24 | UDP Response       | 53          | 53               | Accept |
-| 192.168.100.0/24 | eth0             | TCP Request        | 53          | 53               | Accept |
-| eth0             | 192.168.100.0/24 | TCP Response       | 53          | 53               | Accept |
+| 192.168.100.0/24 | eth0             | TCP                | 53          | 53               | Accept |
+| eth0             | 192.168.100.0/24 | TCP                | 53          | 53               | Accept |
+| 192.168.100.0/24 | eth0             | UDP                | 53          | 53               | Accept |
+| eth0             | 192.168.100.0/24 | UDP                | 53          | 53               | Accept |
 | 192.168.100.0/24 | eth0             | ICMP Echo Request  | 1           | 1                | Accept |
 | eth0             | 192.168.100.0/24 | ICMP Echo Response | 1           | 1                | Accept |
 | 192.168.100.0/24 | 192.168.200.0/24 | ICMP Echo Request  | 1           | 1                | Accept |
 | 192.168.200.0/24 | 192.168.100.0/24 | ICMP Echo Response | 1           | 1                | Accept |
+| 192.168.200.0/24 | 192.168.100.0/24 | ICMP Echo Request  | 1           | 1                | Accept |
+| 192.168.100.0/24 | 192.168.200.0/24 | ICMP Echo Response | 1           | 1                | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 80          | 80               | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 80          | 80               | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 8080        | 8080             | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 8080        | 8080             | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 443         | 443              | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 443         | 443              | Accept |
+| eth0             | 192.168.200.3    | TCP                | 80          | 80               | Accept |
+| 192.168.200.3    | eth0             | TCP                | 80          | 80               | Accept |
+| 192.168.100.0/24 | 192.168.200.3    | TCP                | 80          | 80               | Accept |
+| 192.168.200.3    | 192.168.100.0/24 | TCP                | 80          | 80               | Accept |
 | 192.168.100.3    | 192.168.200.3    | TCP                | *           | 22               | Accept |
 | 192.168.200.3    | 192.168.100.3    | TCP                | 22          | *                | Accept |
+| 192.168.100.3    | 192.168.100.2    | TCP                | *           | 22               | Accept |
+| 192.168.100.2    | 192.168.100.3    | TCP                | 22          | *                | Accept |
 
 
 
@@ -196,7 +206,7 @@ Ci-dessous, une capture d'écran présentant la bonne connexion ssh entre le cli
 
 
 
-Il faut faire très attention à n'autoriser que les machines et appareils autorisés à se connecter sur le terminal distant lorsque l'on configure un pare-feu sur ces règles de connexion 
+Il faut faire très attention à n'autoriser que les machines et appareils autorisés à se connecter sur le terminal distant lorsque l'on configure un pare-feu sur ces règles de connexion. 
 
 ##### 8. Règles finales iptables
 
