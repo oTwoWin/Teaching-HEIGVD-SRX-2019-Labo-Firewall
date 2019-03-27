@@ -124,8 +124,6 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | IP Source        | IP Destination   | Type               | Port source | Port destination | Action |
 | ---------------- | ---------------- | ------------------ | ----------- | ---------------- | ------ |
 | *                | *                | *                  | *           | *                | DROP   |
-| 192.168.100.0/24 | eth0             | UDP Request        | 53          | 53               | Accept |
-| eth0             | 192.168.100.0/24 | UDP Response       | 53          | 53               | Accept |
 | 192.168.100.0/24 | eth0             | TCP                | 53          | 53               | Accept |
 | eth0             | 192.168.100.0/24 | TCP                | 53          | 53               | Accept |
 | 192.168.100.0/24 | eth0             | UDP                | 53          | 53               | Accept |
